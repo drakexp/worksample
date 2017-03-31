@@ -475,12 +475,11 @@ class UserProfileView(View):
                     client = boto3.client(
                         'cognito-idp',
                         'us-east-1',
-                        # Hard coded strings as credentials, not recommended.
-                        aws_access_key_id='AKIAJYOOKUJI6UEPX7NA',
-                        aws_secret_access_key='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'
+                        aws_access_key_id=$accesskey,
+                        aws_secret_access_key=$secretaccesskey
                     )
                     response = client.admin_get_user(
-                    UserPoolId='us-east-1_6xTaZ0XVe',
+                    UserPoolId=$poolid,
                     Username=username
                     )
                     attr = response.get('UserAttributes')
@@ -552,12 +551,11 @@ class UserProfileView(View):
                     client = boto3.client(
                         'cognito-idp',
                         'us-east-1',
-                        # Hard coded strings as credentials, not recommended.
-                        aws_access_key_id='AKIAJYOOKUJI6UEPX7NA',
-                        aws_secret_access_key='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'
+                        aws_access_key_id=$accesskey,
+                        aws_secret_access_key=$secretaccesskey
                     )
                     response = client.admin_update_user_attributes(
-                        UserPoolId='us-east-1_6xTaZ0XVe',
+                        UserPoolId=$poolid,
                         Username=attributes['email'],
                         UserAttributes=userattributes
                     )
@@ -575,12 +573,11 @@ class UserProfileView(View):
                         client = boto3.client(
                             'cognito-idp',
                             'us-east-1',
-                            # Hard coded strings as credentials, not recommended.
-                            aws_access_key_id='AKIAJYOOKUJI6UEPX7NA',
-                            aws_secret_access_key='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'
+                            aws_access_key_id=$accesskey,
+                           aws_secret_access_key=$secretaccesskey
                         )
                         response = client.admin_get_user(
-                            UserPoolId='us-east-1_6xTaZ0XVe',
+                            UserPoolId=$poolid,
                             Username=user
                         )
                     attr = response.get('UserAttributes')
@@ -651,7 +648,7 @@ class ConfirmationView(View):
                 user = request.POST.get('user')
                 key = request.POST.get('verifykey')
                 response = client.confirm_sign_up(
-                  ClientId='4r4jglheombjc8pq6dveggapfc',
+                  ClientId=$clientid,
                   Username=user,
                   ConfirmationCode=key,
                 )
@@ -671,7 +668,7 @@ class NewVerificationView(View):
                 client = boto3.client('cognito-idp', 'us-east-1')
                 user = request.POST.get('user')
                 response = client.resend_confirmation_code(
-                    ClientId='4r4jglheombjc8pq6dveggapfc',
+                    ClientId=$clientid,
                     Username=user
                 )
                 return HttpResponse(True)
@@ -692,7 +689,7 @@ class ForgotPasswordView(View):
                     key = request.POST.get('verifykey')
                     password = request.POST.get('password')
                     response = client.confirm_forgot_password(
-                        ClientId='4r4jglheombjc8pq6dveggapfc',
+                        ClientId=$clientid,
                         Username=user,
                         ConfirmationCode=key,
                         Password=password
@@ -704,7 +701,7 @@ class ForgotPasswordView(View):
                 try:
                     user = request.POST.get('user')
                     response = client.forgot_password(
-                        ClientId='4r4jglheombjc8pq6dveggapfc',
+                        ClientId=$clientid,
                         Username=user
                     )
                     return HttpResponse(True)
@@ -856,16 +853,15 @@ def AutoConfirm(request):
             client = boto3.client(
                 'cognito-idp',
                 'us-east-1',
-                # Hard coded strings as credentials, not recommended.
-                aws_access_key_id='AKIAJYOOKUJI6UEPX7NA',
-                aws_secret_access_key='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'
+                aws_access_key_id=$accesskey,
+                aws_secret_access_key=$secretaccesskey,
             )
             response = client.admin_confirm_sign_up(
-                UserPoolId='us-east-1_6xTaZ0XVe',
+                UserPoolId=$poolid,
                 Username=user
             )
             response = client.admin_update_user_attributes(
-                UserPoolId='us-east-1_6xTaZ0XVe',
+                UserPoolId=$poolid,
                 Username=user,
                 UserAttributes=[
                     {
@@ -887,14 +883,13 @@ def AuthenticateUser(request):
             client = boto3.client(
                 'cognito-idp',
                 'us-east-1',
-                # Hard coded strings as credentials, not recommended.
-                aws_access_key_id='AKIAJYOOKUJI6UEPX7NA',
-                aws_secret_access_key='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'
+                aws_access_key_id=$accesskey,
+                aws_secret_access_key=$secretaccesskey,
             )
             response = client.admin_initiate_auth(
                 AuthFlow='ADMIN_NO_SRP_AUTH',
-                UserPoolId='us-east-1_6xTaZ0XVe',
-                ClientId='4r4jglheombjc8pq6dveggapfc',
+                UserPoolId=$poolid,
+                ClientId=$clientid,
                 AuthParameters={
                     'USERNAME': user,
                     'PASSWORD' : password
@@ -920,8 +915,8 @@ def UploadImage(request):
         try:
             client = boto3.client(
                 's3',                 
-                aws_access_key_id='AKIAJYOOKUJI6UEPX7NA',
-                aws_secret_access_key='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'
+                aws_access_key_id=$accesskey,
+                aws_secret_access_key=$secretaccesskey,
             )
             response = client.put_object(
                 ACL='public-read',
